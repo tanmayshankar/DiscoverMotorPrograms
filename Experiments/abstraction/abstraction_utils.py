@@ -122,7 +122,6 @@ class PrimitiveDecoder(torch.nn.Module):
         
         return states, probs, samples
 
-
 class PrimitiveDecoderKnownLength(torch.nn.Module):
     def __init__(self, opts, prim_len=10):
         '''
@@ -170,99 +169,6 @@ class PrimitiveDecoderKnownLength(torch.nn.Module):
 
         return states, None, None
 
-
-class LatentPredictorKnownNseg(torch.nn.Module):
-    def __init__(self, opts):
-        super(LatentPredictorKnownNseg, self).__init__()
-        self.lstm = torch.nn.LSTM(opts.nh, opts.nh, 4)
-        self.z_predictor = torch.nn.Linear(opts.nh, opts.nz)
-        self.n_skill_segments = opts.n_skill_segments
-        self.nh = opts.nh
-
-    def forward(self, h):
-        '''
-        Args:
-            h: 1 X nh vector
-        Returns zs for primitives:
-            zs: n_skill_segments X 1 X nz vectors
-        '''
-        zs = []
-        t = 0
-        h_t = h
-
-        zeros_inp = torch.zeros((1, 1, self.nh), device=h[0].device)
-
-        for t in range(self.n_skill_segments):
-            o_t, h_t = self.lstm(zeros_inp, h_t)
-            t = t+1
-
-            z_t = self.z_predictor(o_t[0])
-            zs.append(z_t)
-
-        # zs = torch.stack(zs)
-        return zs
-
-
-class LatentPredictorVariableNseg(torch.nn.Module):
-    def __init__(self, opts, max_nseg=20):
-        super(LatentPredictorVariableNseg, self).__init__()
-        self.lstm = torch.nn.LSTM(opts.nh, opts.nh, 4)
-        self.prob_predictor = torch.nn.Linear(opts.nh, 2)
-        self.z_predictor = torch.nn.Linear(opts.nh, opts.nz)
-        self.max_nseg = max_nseg
-        self.p_bias = opts.lpred_p_bias
-        self.nh = opts.nh
-
-    def forward(self, h):
-        '''
-        Args:
-            h: hidden state for LSTM to start with
-        Returns zs for primitives:
-            zs: n_skill_segments X 1 X nz vectors
-            probs: n_skill_segments X 1 X 2 termination probs
-            samples: n_skill_segments X 1 samples (last one should be 1)
-        '''
-        zs = [] 
-        probs = []
-        samples = []
-        t = 0
-
-        stop = 0
-        h_t = h
-        # inp = h.view(1,1,-1)
-        zeros_inp = torch.zeros((1, 1, self.nh), device=h[0].device)
-
-        while stop != 1:
-            o_t, h_t = self.lstm(zeros_inp, h_t)
-            t = t+1
-
-            o_t = o_t[0]
-
-            z_t = self.z_predictor(o_t)
-
-            p_t = self.prob_predictor(o_t)
-            p_t[:, 0] += self.p_bias #bias for continuing
-            p_t = torch.nn.functional.softmax(p_t, dim=1)
-
-            # p_t = torch.nn.functional.softmax(self.prob_predictor(o_t), dim=1)
-            if t >= self.max_nseg:
-                p_t = p_t*0
-                p_t[:, 1] += 1
-
-            sample_t = torch.distributions.Categorical(probs=p_t).sample()
-            stop = (sample_t == 1)
-
-            zs.append(z_t)
-            probs.append(p_t)
-            samples.append(sample_t)
-
-        zs = torch.stack(zs)
-        probs = torch.stack(probs)
-        samples = torch.stack(samples)
-
-        return zs, probs, samples
-
-
 class ScoreFunctionEstimator(object):
     def __init__(self, use_baseline=True, momentum=0.9):
         self.b = 0
@@ -290,47 +196,6 @@ class ScoreFunctionEstimator(object):
         # pseudo_loss = torch.mean(log_probs)*score
         pseudo_loss = torch.sum(log_probs*score)
         return pseudo_loss
-
-
-class IntendedTrajectoryPredictor(torch.nn.Module):
-    def __init__(self, opts):
-        super(IntendedTrajectoryPredictor, self).__init__()
-
-        self.obs_trajectory_encoder = TrajectoryEncoder(opts)
-        self.variable_nseg = opts.variable_nseg
-        self.variable_ns = opts.variable_ns
-
-        if opts.variable_nseg:
-            self.zseq_predictor = LatentPredictorVariableNseg(opts)
-        else:
-            self.zseq_predictor = LatentPredictorKnownNseg(opts)
-
-        if self.variable_ns:
-            self.primitive_decoder = PrimitiveDecoder(opts)
-        else:
-            self.primitive_decoder = PrimitiveDecoderKnownLength(opts, prim_len=opts.fixed_prim_len)
-
-    def forward(self, traj_obs):
-        o_enc, h_enc = self.obs_trajectory_encoder(traj_obs)
-
-        if self.variable_nseg:
-            z_seq, z_probs, z_samples = self.zseq_predictor.forward(h_enc)
-        else:
-            z_seq = self.zseq_predictor.forward(h_enc)
-            z_probs, z_samples = None, None
-
-        prmitives = [self.primitive_decoder(z) for z in z_seq]
-        self.primitives = prmitives
-
-        traj_intended = torch.cat([prim[0] for prim in prmitives])
-
-        if self.variable_ns:
-            probs = torch.cat([prim[1] for prim in prmitives])
-            samples = torch.cat([prim[2] for prim in prmitives])
-        else:
-            probs, samples = None, None
-
-        return traj_intended, probs, samples, z_probs, z_samples
 
 class Imgs2TrajectoryPredictor(torch.nn.Module):
     def __init__(self, opts):
