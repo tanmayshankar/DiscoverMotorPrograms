@@ -7,9 +7,9 @@ from .headers import *
 import os.path as osp
 import pdb
 
-# flags.DEFINE_integer('n_data_workers', 4, 'Number of data loading workers')
-# flags.DEFINE_integer('batch_size', 1, 'Batch size. Code currently only handles bs=1')
-# flags.DEFINE_string('MIME_dir', '/checkpoint/tanmayshankar/MIME/', 'Data Directory')
+flags.DEFINE_integer('n_data_workers', 4, 'Number of data loading workers')
+flags.DEFINE_integer('batch_size', 1, 'Batch size. Code currently only handles bs=1')
+flags.DEFINE_string('MIME_dir', '/checkpoint/tanmayshankar/MIME/', 'Data Directory')
 flags.DEFINE_enum('arm', 'both', ['left', 'right', 'both'], 'Which arms data to load')
 
 class Plan_Dataset(Dataset):
