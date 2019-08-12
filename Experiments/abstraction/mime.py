@@ -188,7 +188,7 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
         if opts.num_pretrain_epochs==-1:
             self.load_network(self.model, 'pred', 'latest', network_dir=opts.network_dir)
 
-        embed()
+        # embed()
         if opts.fixed_skillnet:
             for param in self.model.primitive_decoder.parameters():
                 param.requires_grad = False
