@@ -66,7 +66,7 @@ class TransformerBaseClass(nn.Module):
 			if p.dim() > 1:
 				nn.init.xavier_uniform_(p)
 
-		self.generator = Generator(d_model, output_size, variable_timesteps=self.opts.variable_nseg, presoftmax_bias=opts.presoftmax_bias)
+		self.generator = Generator(d_model, output_size, variable_timesteps=self.opts.variable_nseg, presoftmax_bias=opts.presoftmax_bias, continuing_bias=self.continuing_bias)
 
 
 	# Modifying this forward function for Skill Net!
@@ -254,12 +254,13 @@ class EncoderDecoder(nn.Module):
 class Generator(nn.Module):
 	'''"Define standard linear + softmax generation step."'''
 	
-	def __init__(self, d_model, output_size, variable_timesteps=False, presoftmax_bias=True):       
+	def __init__(self, d_model, output_size, variable_timesteps=False, presoftmax_bias=True, continuing_bias=0):       
 		super(Generator, self).__init__()        
 		
 		self.variable_timesteps = variable_timesteps
 		self.linear_layer = nn.Linear(d_model, output_size)
 		self.presoftmax_bias = presoftmax_bias
+		self.continuing_bias = continuing_bias
 		if self.variable_timesteps:
 			self.stopping_probability_layer = torch.nn.Linear(d_model, 2) 			
 			self.softmax_layer = torch.nn.Softmax(dim=-1)
