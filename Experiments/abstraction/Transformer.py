@@ -67,7 +67,7 @@ class TransformerBaseClass(nn.Module):
 			if p.dim() > 1:
 				nn.init.xavier_uniform_(p)
 
-		self.generator = Generator(d_model, output_size, variable_timesteps=self.opts.variable_nseg, presoftmax_bias=opts.presoftmax_bias, continuing_bias=self.continuing_bias)
+		self.generator = Generator(d_model, output_size, variable_timesteps=self.opts.variable_nseg, presoftmax_bias=opts.presoftmax_bias, continuing_bias=self.continuing_bias, b_probability_factor=opts.b_probability_factor)
 
 
 	# Modifying this forward function for Skill Net!
@@ -255,13 +255,14 @@ class EncoderDecoder(nn.Module):
 class Generator(nn.Module):
 	'''"Define standard linear + softmax generation step."'''
 	
-	def __init__(self, d_model, output_size, variable_timesteps=False, presoftmax_bias=True, continuing_bias=0):       
+	def __init__(self, d_model, output_size, variable_timesteps=False, presoftmax_bias=True, continuing_bias=0, b_probability_factor=0):       
 		super(Generator, self).__init__()        
 		
 		self.variable_timesteps = variable_timesteps
 		self.linear_layer = nn.Linear(d_model, output_size)
 		self.presoftmax_bias = presoftmax_bias
 		self.continuing_bias = continuing_bias
+		self.b_probability_factor = b_probability_factor
 		if self.variable_timesteps:
 			self.stopping_probability_layer = torch.nn.Linear(d_model, 2) 			
 			self.softmax_layer = torch.nn.Softmax(dim=-1)
@@ -270,7 +271,7 @@ class Generator(nn.Module):
 		if self.variable_timesteps:
 			preprobs = self.stopping_probability_layer(x)
 			if self.presoftmax_bias:
-				preprobs = preprobs*self.opts.b_probability_factor	
+				preprobs = preprobs*self.b_probability_factor	
 				preprobs[0] += self.continuing_bias
 			return self.linear_layer(x), self.softmax_layer(preprobs), 
 		else:
