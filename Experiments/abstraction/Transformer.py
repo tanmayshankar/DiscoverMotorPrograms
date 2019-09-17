@@ -17,6 +17,7 @@ import gc
 from absl import flags
 
 flags.DEFINE_boolean('presoftmax_bias', True, 'Whether or not to apply continuing_bias before stop probability softmax.')
+flags.DEFINE_float('b_probability_factor', 0.01, 'Factor to multiply preprobabilities with before adding bias.')
 
 class TransformerBaseClass(nn.Module):
 	
