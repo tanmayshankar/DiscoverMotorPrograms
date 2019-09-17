@@ -280,12 +280,12 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
     # @profile
     def forward(self):
         # print("GROUND TRUTH TRAJECTORY: ", self.trj_gt)
-
+        fake_fnseg_iterations = 200000
         if self.opts.variable_nseg:
-            # if self.total_iter>80000:
-            self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=False)
-            # else:
-                # self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=True)
+            if self.total_iter>fake_fnseg_iterations:
+                self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=False)
+            else:
+                self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=True)
         else:            
             self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt)
 
@@ -338,7 +338,7 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
             self.sf_latent_loss = self.sf_latent_loss_fn.forward(self.total_loss + self.parsimony_loss, z_probs, z_samples)
 
             # Prevent total collapse of NSeg to 2 or something. 
-            # if self.total_iter>200000:
+            # if self.total_iter>fake_fnseg_iterations:
             self.total_loss += self.opts.sf_loss_wt*self.sf_latent_loss
             self.register_scalars({'sf_latent_loss': self.opts.sf_loss_wt*self.sf_latent_loss.item(), 
                 'parsimony_loss': self.parsimony_loss.item()})

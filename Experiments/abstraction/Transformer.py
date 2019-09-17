@@ -269,6 +269,7 @@ class Generator(nn.Module):
 		if self.variable_timesteps:
 			preprobs = self.stopping_probability_layer(x)
 			if self.presoftmax_bias:
+				preprobs = preprobs*self.opts.b_probability_factor	
 				preprobs[0] += self.continuing_bias
 			return self.linear_layer(x), self.softmax_layer(preprobs), 
 		else:
