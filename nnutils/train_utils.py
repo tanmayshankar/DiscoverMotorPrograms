@@ -191,7 +191,8 @@ class Trainer():
         optim_steps = 0
         dataset_size = len(self.dataloader)
 
-        for epoch in range(opts.num_pretrain_epochs, opts.num_epochs):
+        # for epoch in range(opts.num_pretrain_epochs, opts.num_epochs):
+        for epoch in range(1):
             self.scheduler.step()
             epoch_iter = 0
             self.curr_epoch = epoch
