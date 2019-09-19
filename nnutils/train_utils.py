@@ -197,8 +197,8 @@ class Trainer():
             self.curr_epoch = epoch
             for i, batch in enumerate(self.dataloader): 
 
-                # if i>280:
-                #     pdb.set_trace()
+                if i>50:
+                    break
 
                 t_init = time.time()
                 self.set_input(batch)
