@@ -405,8 +405,8 @@ def main(_):
     # Profiling to test VAE.
     if opts.profile:
         cProfile.run(trainer.train())
-
-    trainer.train()
+    else:
+        trainer.train()
     
     
 if __name__ == '__main__':
