@@ -228,6 +228,7 @@ class Trainer():
                 total_steps += 1
                 epoch_iter += 1
 
+
                 if opts.display_visuals and (total_steps % opts.display_freq == 0):
                     iter_end_time = time.time()
                     if opts.use_tf_vis:
@@ -235,6 +236,8 @@ class Trainer():
                     else:
                         visualizer.display_current_results(self.get_current_visuals(), epoch)
                         visualizer.plot_current_points(self.get_current_points())
+
+                t_viz_img = time.time()
 
                 if opts.print_scalars and (total_steps % opts.print_freq == 0):
                     scalars = self.get_current_scalars()
@@ -245,12 +248,16 @@ class Trainer():
                         else:
                             visualizer.plot_current_scalars(epoch, float(epoch_iter)/dataset_size, opts, scalars)
 
+                t_viz_sc = time.time()
                 if total_steps % opts.save_latest_freq == 0:
                     print('saving the model at the end of epoch {:d}, iters {:d}'.format(epoch, total_steps))
                     self.save('latest')
 
                 if total_steps == opts.num_iter:
                     return
+
+                print("#### DISP IMG:",t_viz_img-t_opt)
+                print("#### DISP SC:",t_viz_sc-t_viz_img)
 
             # # Empty cache.
             # if epoch%5==0:
