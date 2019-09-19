@@ -191,15 +191,12 @@ class Trainer():
         optim_steps = 0
         dataset_size = len(self.dataloader)
 
-        # for epoch in range(opts.num_pretrain_epochs, opts.num_epochs):
-        for epoch in range(1):
+        for epoch in range(opts.num_pretrain_epochs, opts.num_epochs):
+        # for epoch in range(1):
             self.scheduler.step()
             epoch_iter = 0
             self.curr_epoch = epoch
             for i, batch in enumerate(self.dataloader): 
-
-                if i>50:
-                    break
 
                 t_init = time.time()
                 self.set_input(batch)
@@ -257,8 +254,8 @@ class Trainer():
                 if total_steps == opts.num_iter:
                     return
 
-                print("#### DISP IMG:",t_viz_img-t_opt)
-                print("#### DISP SC:",t_viz_sc-t_viz_img)
+                # print("#### DISP IMG:",t_viz_img-t_opt)
+                # print("#### DISP SC:",t_viz_sc-t_viz_img)
 
             # # Empty cache.
             # if epoch%5==0:

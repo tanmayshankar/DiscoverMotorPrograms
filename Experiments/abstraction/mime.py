@@ -281,7 +281,7 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
     # @profile
     def forward(self):
         # print("GROUND TRUTH TRAJECTORY: ", self.trj_gt)
-        fake_fnseg_iterations = 200000
+        fake_fnseg_iterations = 50000
 
         t_a = time.time()
         if self.opts.variable_nseg:
@@ -335,14 +335,11 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
 
         t_f = time.time()
 
-        print("Time AB:",t_b-t_a)
-        print("Time BC:",t_c-t_b)
-        print("Time CD:",t_d-t_c)
-        print("Time DE:",t_e-t_d)
-        print("Time EF:",t_f-t_e)
-
-
-
+        # print("Time AB:",t_b-t_a)
+        # print("Time BC:",t_c-t_b)
+        # print("Time CD:",t_d-t_c)
+        # print("Time DE:",t_e-t_d)
+        # print("Time EF:",t_f-t_e)
         self.total_loss = 0
 
         self.total_loss += self.opts.align_loss_wt*self.align_loss
