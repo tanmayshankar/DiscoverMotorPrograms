@@ -220,10 +220,10 @@ class Trainer():
 
                     t_opt = time.time()
 
-                    print('t_batch: {}'.format(t_batch - t_init))
-                    print('t_forw: {}'.format(t_forw - t_batch))
-                    print('t_backw: {}'.format(t_backw - t_forw))
-                    print('t_opt: {}'.format(t_opt - t_backw))
+                    # print('t_batch: {}'.format(t_batch - t_init))
+                    # print('t_forw: {}'.format(t_forw - t_batch))
+                    # print('t_backw: {}'.format(t_backw - t_forw))
+                    # print('t_opt: {}'.format(t_opt - t_backw))
 
                 total_steps += 1
                 epoch_iter += 1

@@ -282,6 +282,8 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
     def forward(self):
         # print("GROUND TRUTH TRAJECTORY: ", self.trj_gt)
         fake_fnseg_iterations = 200000
+
+        t_a = time.time()
         if self.opts.variable_nseg:
             if self.total_iter>fake_fnseg_iterations:
                 self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=False)
@@ -289,6 +291,7 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
                 self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt, fake_fnseg=True)
         else:            
             self.trj_pred, probs, samples, z_probs, z_samples = self.model.forward(self.trj_gt)
+        t_b = time.time()
 
         self.trj_pred = self.state_post_process_fn(self.trj_pred)
         # self.trj_pred.retain_grad()
@@ -301,10 +304,13 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
         #     self.align_loss = self.align_loss_fn(self.trj_pred, self.trj_gt)
 
         # pdb.set_trace()
+
+        t_c = time.time()
         if self.opts.normalize_loss:
             self.align_loss = self.align_loss_fn(self.trj_pred, self.trj_gt)/self.trj_gt.shape[0]
         else:
             self.align_loss = self.align_loss_fn(self.trj_pred, self.trj_gt)
+        t_d = time.time()
 
         self.step_loss = self.step_loss_fn(self.trj_pred[:,0,:])*self.opts.step_loss_wt
 
@@ -312,6 +318,7 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
         # self.align_loss += self.len_loss 
         self.reinforce_loss = self.opts.align_loss_wt*self.align_loss+self.opts.len_loss_wt*self.len_loss+ self.opts.step_loss_wt*self.step_loss
 
+        t_e = time.time()
         if self.opts.variable_ns:
             self.sf_loss = self.sf_loss_fn.forward(self.reinforce_loss, probs, samples)
         else:
@@ -325,6 +332,16 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
             self.prior_loss += l
             if self.opts.variable_ns:
                 self.sf_prior_loss += self.sf_prior_loss_fn.forward(l, prim[1], prim[2])
+
+        t_f = time.time()
+
+        print("Time AB:,"t_b-t_a)
+        print("Time BC:,"t_c-t_b)
+        print("Time CD:,"t_d-t_c)
+        print("Time DE:,"t_e-t_d)
+        print("Time EF:,"t_f-t_e)
+
+
 
         self.total_loss = 0
 
