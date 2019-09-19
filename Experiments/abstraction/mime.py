@@ -426,6 +426,8 @@ def main(_):
         print("#### Print sorting cumtime. ####")
         print("################################")
         pr.print_stats(sort='cumtime')
-    
+    else:
+        trainer.train()
+        
 if __name__ == '__main__':
     app.run(main)
