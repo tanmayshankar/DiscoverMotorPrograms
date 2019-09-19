@@ -404,7 +404,7 @@ def main(_):
 
     # Profiling to test VAE.
     if opts.profile:
-        cProfile.run(trainer.train())
+        cProfile.runctx('trainer.train()')
     else:
         trainer.train()
     
