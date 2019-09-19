@@ -68,6 +68,7 @@ flags.DEFINE_string('pretrain_skillnet_name', 'mime_plan_ba_fns', 'Name of pretr
 flags.DEFINE_boolean('normalize_loss',False,'Whether to normalize sequence loss.')
 flags.DEFINE_string('network_dir',None,'Directory to load network from.')
 flags.DEFINE_boolean('shuffle',False,'Whether to shuffle dataset or not.')
+flags.DEFINE_boolean('profile',False,'Whether to profile.')
 
 class PrimitiveDiscoveryTrainer(train_utils.Trainer):
 
@@ -385,7 +386,8 @@ def main(_):
     trainer.init_training()
 
     # Profiling to test VAE.
-    # cProfile.run(trainer.train())
+    if opts.profile:
+        cProfile.run(trainer.train())
 
     trainer.train()
     
