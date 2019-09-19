@@ -335,11 +335,11 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
 
         t_f = time.time()
 
-        print("Time AB:,"t_b-t_a)
-        print("Time BC:,"t_c-t_b)
-        print("Time CD:,"t_d-t_c)
-        print("Time DE:,"t_e-t_d)
-        print("Time EF:,"t_f-t_e)
+        print("Time AB:",t_b-t_a)
+        print("Time BC:",t_c-t_b)
+        print("Time CD:",t_d-t_c)
+        print("Time DE:",t_e-t_d)
+        print("Time EF:",t_f-t_e)
 
 
 
