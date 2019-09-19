@@ -414,8 +414,21 @@ def main(_):
         pr.enable()
         trainer.train()
         pr.disable()
+
+        print("################################")
+        print("#### Print sorting by time. ####")
+        print("################################")
         pr.print_stats(sort='time')
 
+        print("################################")
+        print("#### Print sorting percall. ####")
+        print("################################")
+        pr.print_stats(sort='percall')
+
+        print("################################")
+        print("#### Print sorting cumtime. ####")
+        print("################################")
+        pr.print_stats(sort='cumtime')
     
 if __name__ == '__main__':
     app.run(main)
