@@ -22,7 +22,7 @@ flags.DEFINE_float('b_probability_factor', 0.01, 'Factor to multiply preprobabil
 class TransformerBaseClass(nn.Module):
 	
 	# Define a transformer that takes in an Encoder-Decoder and puts a "generator" (output layer) on top of it.       
-	def __init__(self, opts, number_layers=6, attention_heads=8, dropout=0.1, dummy_inputs=False):
+	def __init__(self, opts, number_layers=6, attention_heads=8, dropout=0.1, dummy_inputs=False, maximum_skills=5):
 		
 		super(TransformerBaseClass, self).__init__()
 		"Helper: Construct a model from hyperparameters."
@@ -84,7 +84,7 @@ class TransformerBaseClass(nn.Module):
 
 class TransformerFixedNSeg(TransformerBaseClass):
 
-	def __init__(self, opts, number_layers=6, attention_heads=8, dropout=0.1, dummy_inputs=False):
+	def __init__(self, opts, number_layers=6, attention_heads=8, dropout=0.1, dummy_inputs=False, maximum_skills=5):
 
 		# This just calls __init__ of base class.
 		super(TransformerFixedNSeg, self).__init__(opts, number_layers, attention_heads, dropout, dummy_inputs, maximum_skills)
