@@ -402,12 +402,20 @@ def main(_):
     trainer = PrimitiveDiscoveryTrainer(opts)
     trainer.init_training()
 
-    # Profiling to test VAE.
-    if opts.profile:
-        cProfile.runctx('trainer.train()',globals(),locals())
-    else:
+    # # Profiling to test VAE.
+    # if opts.profile:
+    #     cProfile.runctx('trainer.train()',globals(),locals())
+    # else:
+    #     trainer.train()
+
+    # # Profiling to test VAE.
+    if opts.profile:  
+        pr = cProfile.Profile()
+        pr.enable()
         trainer.train()
-    
+        pr.disable()
+        pr.print_stats(sort='time')
+
     
 if __name__ == '__main__':
     app.run(main)
