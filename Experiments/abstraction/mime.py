@@ -421,9 +421,9 @@ def main(_):
         pr.print_stats(sort='time')
 
         print("################################")
-        print("#### Print sorting percall. ####")
+        print("#### Print sorting tottime. ####")
         print("################################")
-        pr.print_stats(sort='percall')
+        pr.print_stats(sort='tottime')
 
         print("################################")
         print("#### Print sorting cumtime. ####")
