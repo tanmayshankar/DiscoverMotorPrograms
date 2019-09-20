@@ -37,7 +37,7 @@ class TransformerBaseClass(nn.Module):
 		h = attention_heads
 		N = number_layers
 		self.dummy_inputs = dummy_inputs
-		self.maximum_length = opts.n_skill_segments+1
+		self.maximum_length = opts.n_skill_segments-1
 
 		c = copy.deepcopy
 		attn = MultiHeadedAttention(h, d_model)

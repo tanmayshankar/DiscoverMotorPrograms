@@ -67,7 +67,7 @@ flags.DEFINE_integer('num_pretrain_skillnet_epoch', 0, 'Use a pretrained skill d
 flags.DEFINE_string('pretrain_skillnet_name', 'mime_plan_ba_fns', 'Name of pretrained net')
 flags.DEFINE_boolean('normalize_loss',False,'Whether to normalize sequence loss.')
 flags.DEFINE_string('network_dir',None,'Directory to load network from.')
-flags.DEFINE_boolean('shuffle',False,'Whether to shuffle dataset or not.')
+flags.DEFINE_boolean('shuffle',True,'Whether to shuffle dataset or not.')
 flags.DEFINE_boolean('profile',False,'Whether to profile.')
 
 class PrimitiveDiscoveryTrainer(train_utils.Trainer):
@@ -428,6 +428,6 @@ def main(_):
         pr.print_stats(sort='cumtime')
     else:
         trainer.train()
-        
+
 if __name__ == '__main__':
     app.run(main)
