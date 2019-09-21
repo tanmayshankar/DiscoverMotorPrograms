@@ -281,7 +281,8 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
     # @profile
     def forward(self):
         # print("GROUND TRUTH TRAJECTORY: ", self.trj_gt)
-        fake_fnseg_iterations = 50000
+        # fake_fnseg_iterations = 50000
+        fake_fnseg_iterations = 0
 
         t_a = time.time()
         if self.opts.variable_nseg:
