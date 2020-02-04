@@ -211,7 +211,7 @@ class MIME_NewDataset(Dataset):
 # ------------ Data Loader ----------- #
 # ------------------------------------ #
 def data_loader(opts, split='all', shuffle=True):
-	dset = MIME_NewDataset(opts, split=split)
+	dset = MIME_NewDataset(split=split)
 
 	return DataLoader(
 		dset,
