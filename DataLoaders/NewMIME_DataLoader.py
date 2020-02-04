@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from headers import *
+from .headers import *
 import os.path as osp
 
 flags.DEFINE_integer('ds_freq', 20, 'Downsample joint trajectories by this fraction. Original recroding rate = 100Hz')
