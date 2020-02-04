@@ -206,20 +206,6 @@ class MIME_NewDataset(Dataset):
 		np.save("MIME_Orig_Vel_Min.npy", vel_min_value)
 		np.save("MIME_Orig_Vel_Max.npy", vel_max_value)
 
-class MIME_Dataloader_Tester(unittest.TestCase):
-	
-	def test_MIMEdataloader(self):
-
-		self.dataset = MIME_NewDataset()
-
-		# Check the first index of the dataset.
-		data_element = self.dataset[0]
-
-		validity = data_element['is_valid']==1
-		check_demo_data = (data_element['demo']==np.load("Test_Data/MIME_Dataloader_DE.npy")).all()
-
-		self.assertTrue(validity and check_demo_data)
-
 # ------------ Data Loader ----------- #
 # ------------------------------------ #
 def data_loader(opts, split='all', shuffle=True):
