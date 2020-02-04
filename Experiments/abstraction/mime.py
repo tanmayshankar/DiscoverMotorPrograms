@@ -38,7 +38,7 @@ import torch.nn as nn
 import torchvision
 
 # from ...DataLoaders import MIME_DataLoader as MIME
-from ...DataLoaders import NewMIME_Dataloader as MIME
+from ...DataLoaders import NewMIME_DataLoader as MIME
 from ...nnutils import train_utils
 from ...nnutils import seq_alignment
 from ...nnutils import geometry as geom_util
