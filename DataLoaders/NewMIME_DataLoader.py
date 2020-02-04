@@ -9,6 +9,8 @@ import os.path as osp
 flags.DEFINE_integer('ds_freq', 20, 'Downsample joint trajectories by this fraction. Original recroding rate = 100Hz')
 flags.DEFINE_integer('n_data_workers', 4, 'Number of data loading workers')
 flags.DEFINE_integer('batch_size', 1, 'Batch size. Code currently only handles bs=1')
+flags.DEFINE_string('MIME_dir', '/checkpoint/tanmayshankar/MIME/', 'Data Directory')
+flags.DEFINE_boolean('remote', False, 'Whether operating from a remote server or not.')
 
 def select_baxter_angles(trajectory, joint_names, arm='right'):
     # joint names in order as used via mujoco visualizer
