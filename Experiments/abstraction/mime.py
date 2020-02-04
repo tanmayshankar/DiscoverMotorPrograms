@@ -37,7 +37,8 @@ import torch
 import torch.nn as nn
 import torchvision
 
-from ...DataLoaders import MIME_DataLoader as MIME
+# from ...DataLoaders import MIME_DataLoader as MIME
+from ...DataLoaders import NewMIME_Dataloader as MIME
 from ...nnutils import train_utils
 from ...nnutils import seq_alignment
 from ...nnutils import geometry as geom_util
@@ -230,26 +231,28 @@ class PrimitiveDiscoveryTrainer(train_utils.Trainer):
 
         if not(self.invalid_batch):
             self.batch = batch
-            if opts.st_space == 'ee_l':
-                self.trj_gt = batch['left_trajectory']
-            elif opts.st_space == 'ee_r':
-                self.trj_gt = batch['right_trajectory']
-            elif opts.st_space == 'ee_all':
-                self.trj_gt = torch.cat((batch['left_trajectory'], batch['right_trajectory']), dim=-1)
-            elif opts.st_space == 'joint':
-                self.trj_gt = batch['joint_angle_trajectory']
-            elif opts.st_space == 'joint_ra':
-                self.trj_gt = batch['ra_trajectory']
-            elif opts.st_space == 'joint_la':
-                self.trj_gt = batch['la_trajectory']
-            elif opts.st_space == 'joint_both':
-                # according to baxter_vis, the plans were left, right joints
-                self.trj_gt = torch.cat((batch['la_trajectory'], batch['ra_trajectory']), dim=-1)
-            elif opts.st_space == 'joint_both_gripper':
-                # Feed to Baxter Viz in this order: Left arm, Right arm, Left Gripper, Right Gripper.            
-                self.trj_gt = torch.cat((batch['la_trajectory'], batch['ra_trajectory'], batch['left_gripper'].unsqueeze(2), batch['right_gripper'].unsqueeze(2)), dim=-1)
+            # if opts.st_space == 'ee_l':
+            #     self.trj_gt = batch['left_trajectory']
+            # elif opts.st_space == 'ee_r':
+            #     self.trj_gt = batch['right_trajectory']
+            # elif opts.st_space == 'ee_all':
+            #     self.trj_gt = torch.cat((batch['left_trajectory'], batch['right_trajectory']), dim=-1)
+            # elif opts.st_space == 'joint':
+            #     self.trj_gt = batch['joint_angle_trajectory']
+            # elif opts.st_space == 'joint_ra':
+            #     self.trj_gt = batch['ra_trajectory']
+            # elif opts.st_space == 'joint_la':
+            #     self.trj_gt = batch['la_trajectory']
+            # elif opts.st_space == 'joint_both':
+            #     # according to baxter_vis, the plans were left, right joints
+            #     self.trj_gt = torch.cat((batch['la_trajectory'], batch['ra_trajectory']), dim=-1)
+            # elif opts.st_space == 'joint_both_gripper':
+            #     # Feed to Baxter Viz in this order: Left arm, Right arm, Left Gripper, Right Gripper.            
+            #     self.trj_gt = torch.cat((batch['la_trajectory'], batch['ra_trajectory'], batch['left_gripper'].unsqueeze(2), batch['right_gripper'].unsqueeze(2)), dim=-1)
 
-            self.trj_gt = self.trj_gt.view(-1, 1, self.opts.n_state).float().cuda(device=opts.gpu_id)
+            # Remember... it's.. batched data.
+            self.trj_gt = batch['demo']
+            self.trj_gt = self.trj_gt.view(-1, 1, self.opts.n_state).float().cuda(device=opts.gpu_id)                      
             if self.opts.subsample_trj:
                 self.trj_gt = self.sample_subtrajectory(self.trj_gt)
 
